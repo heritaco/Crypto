@@ -73,7 +73,7 @@ class Coin:
         # We add the net profit and max profit
 
         self.data["net_profit"] = 100 * (self.data["c"] / self.data["c"].shift(1) - 1)
-        self.data["max_profit"] = 100 * (self.data["o"] / self.data["h"] - 1)
+        self.data["max_profit"] = 100 * (self.data["h"] / self.data["o"] - 1)
 
         # ADDING INDICATORS #
 
@@ -91,6 +91,10 @@ class Coin:
 
         self.data["obv"] = 0
         self.data["obv"] = self.data["obv"].shift(1) + np.sign(self.data["net_profit"]) * self.data["qav"]
+
+        # On Board Volume Moving Average
+
+        self.data["obv_av"] = self.data["obv"].rolling(window=3).mean()
 
     def __str__(self):
         return self.token
@@ -177,6 +181,7 @@ class Coin:
         saved_data.index = to_datetime(saved_data.index)
         saved_index = set(saved_data.index)
         new_data = new_data.loc[~new_data.index.isin(saved_index)]
+        new_data = new_data.dropda(inplace=True)
         final_data = concat([saved_data, new_data])
 
         return final_data
