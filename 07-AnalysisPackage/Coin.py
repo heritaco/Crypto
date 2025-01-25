@@ -181,7 +181,7 @@ class Coin:
         saved_data.index = to_datetime(saved_data.index)
         saved_index = set(saved_data.index)
         new_data = new_data.loc[~new_data.index.isin(saved_index)]
-        new_data = new_data.dropda(inplace=True)
+        new_data = new_data.dropna(inplace=True)
         final_data = concat([saved_data, new_data])
 
         return final_data
